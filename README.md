@@ -14,7 +14,7 @@ https://paker.net.cn/article?id=24
 
 安装依赖包
 
-> pip install requirements.txt
+> pip install -r requirements.txt
 
 运行
 
