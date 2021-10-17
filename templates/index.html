@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Web Log Roll</title>
+</head>
+<body>
+<h1>Web Log Roll</h1>
+<input type="text" id="message" placeholder="请输入日志管道"/>
+<button type="button" onclick="pprint()">打印日志</button>
+<div>
+    <ul id="get_message"></ul>
+</div>
+<script src="static/jquery-3.1.1.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    /*$(function () {
+        var source = new EventSource("/message?channel=log");
+        source.addEventListener('message', function (event) {
+            var data = JSON.parse(event.data);
+            console.log(data)
+            $('#get_message').append(data.info+'<br>');
+        }, false);
+        source.addEventListener('error', function (event) {
+            console.log('reconnected service!')
+        }, false);
+    })*/
+
+    function pprint() {
+        var source = new EventSource("/message?channel="+document.getElementById('message').value);
+        source.addEventListener('message', function (event) {
+            var data = JSON.parse(event.data);
+            //console.log(data)
+            var logtext = preparedata(data.info)
+            $('#get_message').append(logtext);
+        }, false);
+        source.addEventListener('error', function (event) {
+            console.log('reconnected service!')
+        }, false);
+    }
+
+    function preparedata(logtext) {
+        //'<span style="color:#0A0">'+data.info+'</span><br>'
+        logarray = logtext.split("|")
+        date = logarray[0]
+        level = logarray[1]
+        textarry = logarray[2].split(" - ")
+        path = textarry[0]
+        text = textarry[1]
+        loginfo = `<li style="list-style: none">
+                        <span style="color:#0A0">${date} </span>
+                        |
+                        <b> ${level}    </b>
+                        |
+                        <span style="color:#0AA"> ${path} </span>
+                        -
+                         <span style="color:#258ccd"> ${text}</span>
+                   </li>`
+        return loginfo
+
+    }
+</script>
+</body>
+</html>
